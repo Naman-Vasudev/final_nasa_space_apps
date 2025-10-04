@@ -1,0 +1,5 @@
+{
+  "name": "ClimaCast",
+  "description": "ClimaCast: An advanced web application with a sleek, modern UI for long-term weather probability analysis. Features an interactive graph to visualize climatology trends, detailed parameter cards, and a refined user experience for any location on Earth.",
+  "requestFramePermissions": []
+}
