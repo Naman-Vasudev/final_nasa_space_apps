@@ -1,8 +1,7 @@
 # ClimaCast
 
-[Check it out on Vercel](https://will-it-rain-on-my-parade-deploy-6q.vercel.app)  
-or  
-[Visit my website](https://www.namanvasudev.us)
+[Check it out on Vercel](https://final-nasa-space-apps.vercel.app/)  
+
 
 
 **History predicts the future.**
