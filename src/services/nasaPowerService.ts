@@ -1,4 +1,4 @@
-import type { NasaPowerData } from '../types';
+import type { NasaPowerData, HistoricalData } from '../types';
 
 const API_BASE_URL = "https://power.larc.nasa.gov/api/temporal/daily/point";
 
@@ -17,7 +17,8 @@ export const fetchWeatherData = async (lat: number, lon: number): Promise<NasaPo
   // Use a fixed long-term date range for climatology
   const startDate = "19910101";
   const endDateObj = new Date();
-  endDateObj.setDate(endDateObj.getDate() - 3); // Use data up to 3 days ago to ensure availability
+  // FIX: Use setUTCDate for consistency and to avoid timezone-related issues.
+  endDateObj.setUTCDate(endDateObj.getUTCDate() - 3); // Use data up to 3 days ago to ensure availability
   const endDate = endDateObj.toISOString().split('T')[0].replace(/-/g, '');
 
   const url = new URL(API_BASE_URL);
@@ -53,5 +54,52 @@ export const fetchWeatherData = async (lat: number, lon: number): Promise<NasaPo
   } catch (error) {
     console.error("Failed to fetch weather data:", error);
     throw new Error("Could not retrieve climate data from NASA. Please try again later.");
+  }
+};
+
+export const fetchSingleDayWeatherData = async (lat: number, lon: number, date: string): Promise<HistoricalData> => {
+  const dateStr = date.replace(/-/g, '');
+
+  const url = new URL(API_BASE_URL);
+  url.searchParams.append("parameters", PARAMETERS);
+  url.searchParams.append("community", "AG");
+  url.searchParams.append("longitude", lon.toString());
+  url.searchParams.append("latitude", lat.toString());
+  url.searchParams.append("start", dateStr);
+  url.searchParams.append("end", dateStr);
+  url.searchParams.append("format", "JSON");
+
+  try {
+    const response = await fetch(url.toString());
+     if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`NASA POWER API Error: ${errorData.error || response.statusText}`);
+    }
+    const data = await response.json();
+    if (!data?.properties?.parameter) {
+        throw new Error("Invalid data structure from NASA POWER API for single day fetch.");
+    }
+
+    const parameters = data.properties.parameter;
+    const singleDayData: HistoricalData = {};
+
+    for (const param in parameters) {
+      if (parameters[param] && typeof parameters[param][dateStr] !== 'undefined') {
+        let value = parameters[param][dateStr];
+        if (value === -999) {
+          value = null;
+        }
+        singleDayData[param] = value;
+      }
+    }
+    
+    if (Object.keys(singleDayData).length === 0) {
+        throw new Error(`No data available for the selected date: ${date}. Data is typically available up to 3-4 days ago.`);
+    }
+
+    return singleDayData;
+  } catch (error) {
+    console.error("Failed to fetch single-day weather data:", error);
+    throw new Error(`Could not retrieve weather data for ${date}. Please ensure the date is not too recent and try again.`);
   }
 };

@@ -1,12 +1,8 @@
-# ClimaCast
-
-[Check it out on Vercel](https://final-nasa-space-apps.vercel.app/)  
-
-
+# ClimaCast 🌦️
 
 **History predicts the future.**
 
-ClimaCast is an advanced web application for long-term weather probability analysis. It leverages decades of historical climate data to provide detailed climatological insights for any location on Earth. Users can explore typical weather conditions, analyze trends, and receive AI-powered summaries and suggestions for a specific date window.
+ClimaCast is an advanced web application for long-term weather probability analysis. It leverages decades of historical climate data to provide detailed climatological insights for any location on Earth. For future dates, it provides a statistical climatology forecast, while for past dates, it displays the actual recorded weather. Users can explore typical weather conditions, analyze trends, and receive AI-powered summaries and suggestions for a specific date window.
 
 ## Key Features
 
@@ -33,12 +29,15 @@ ClimaCast is an advanced web application for long-term weather probability analy
 
 ## How It Works
 
-1.  **Location & Date Selection:** The user selects a location on the map (or via search) and a target date.
-2.  **Data Fetching:** The application queries the NASA POWER API for over 30 years of historical daily weather data for the chosen coordinates.
-3.  **Client-Side Analysis:** A robust analysis engine written in TypeScript runs in the browser. It filters the entire dataset to a specific "window" around the target date (e.g., ±15 days) for every year in the record.
-4.  **Statistical Calculation:** The engine calculates a comprehensive set of climatological statistics, including percentiles, probabilities, distributions, and long-term trends (using the Mann-Kendall test).
-5.  **Data Visualization:** The results are rendered using Recharts and custom React components to create interactive graphs, cards, and detailed modal views.
-6.  **AI Augmentation (Optional):** The user can request AI-driven insights. The structured analysis data is sent to a serverless backend function, which securely queries a generative AI model to generate summaries, activity plans, or chatbot responses based *only* on the provided data.
+ClimaCast provides two types of weather insights based on the date you select:
+
+### For Past Dates: Actual Historical Weather
+
+If you choose a date in the past (typically more than 3-4 days ago), ClimaCast retrieves and displays the **actual, recorded weather data** from the NASA POWER archives for that specific day. This allows you to see exactly what the weather was like at your chosen location on a historical date.
+
+### For Future & Recent Dates: Climatological Determination
+
+If you choose today's date, a recent date, or any date in the future, ClimaCast performs a **climatological determination**. It analyzes over 30 years of historical data for a date window around your selected day to determine the most probable weather conditions. This is not a traditional forecast but a powerful statistical prediction based on decades of climate patterns, showing you what the weather is *typically* like for that time of year.
 
 ## Getting Started
 
@@ -78,4 +77,3 @@ Follow these instructions to get a local copy of ClimaCast up and running for de
 
 5.  **Open the application:**
     Navigate to `http://localhost:5173` (or the address shown in your terminal) in your web browser. You should now see the ClimaCast application running.
-

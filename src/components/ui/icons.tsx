@@ -1,15 +1,20 @@
+// Fix: Add React import to resolve "Cannot find namespace 'React'" errors.
+import React from 'react';
+
 // --- Dynamic Icons ---
 
 // Weathervane for Wind
-export const WeathervaneIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const WeathervaneIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2L12 22M12 2L6 6M12 2L18 6M6 6L6 10L18 10L18 6M6 6L2 6L4 4M18 6L22 6L20 4" />
     </svg>
 );
 
 
 // Dynamic Thermometer for Temperature
-export const DynamicTemperatureIcon: React.FC<{ value: number }> = ({ value }) => {
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const DynamicTemperatureIcon: React.FC<{ value: number; className?: string }> = ({ value, className = 'h-6 w-6' }) => {
     const MIN_TEMP = -20;
     const MAX_TEMP = 45;
     const clampedValue = Math.max(MIN_TEMP, Math.min(MAX_TEMP, value));
@@ -27,7 +32,7 @@ export const DynamicTemperatureIcon: React.FC<{ value: number }> = ({ value }) =
     const color = getColor(value);
 
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             {/* Mercury Fill */}
             <path d={`M12 17.5a2.5 2.5 0 1 0 0 -5a2.5 2.5 0 0 0 0 5z`} fill={color} stroke="none" />
@@ -41,18 +46,19 @@ export const DynamicTemperatureIcon: React.FC<{ value: number }> = ({ value }) =
 
 
 // Dynamic Rain/Snow icon for Precipitation
-export const DynamicPrecipitationIcon: React.FC<{ isSnowing: boolean }> = ({ isSnowing }) => {
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const DynamicPrecipitationIcon: React.FC<{ isSnowing: boolean; className?: string }> = ({ isSnowing, className = 'h-6 w-6' }) => {
     if (isSnowing) {
         // Snowflake Icon
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v20M2 12h20M5.636 5.636l12.728 12.728M5.636 18.364L18.364 5.636" />
             </svg>
         );
     }
     // Raindrop Icon
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 22a7 7 0 007-7c0-5.25-7-13-7-13S5 9.75 5 15a7 7 0 007 7z" />
         </svg>
     );
@@ -60,7 +66,8 @@ export const DynamicPrecipitationIcon: React.FC<{ isSnowing: boolean }> = ({ isS
 
 
 // Dynamic Sun for UV Index
-export const DynamicUvIcon: React.FC<{ uvIndex: number }> = ({ uvIndex }) => {
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const DynamicUvIcon: React.FC<{ uvIndex: number; className?: string }> = ({ uvIndex, className = 'h-6 w-6' }) => {
     const getUvStyle = (uv: number) => {
         let color = '#FDD835'; // Moderate
         let glowStdDeviation = 1;
@@ -74,7 +81,7 @@ export const DynamicUvIcon: React.FC<{ uvIndex: number }> = ({ uvIndex }) => {
     const { color, glowStdDeviation } = getUvStyle(uvIndex);
 
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24">
              <defs>
                 <filter id="uv-glow" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation={glowStdDeviation} result="coloredBlur" />
@@ -94,36 +101,41 @@ export const DynamicUvIcon: React.FC<{ uvIndex: number }> = ({ uvIndex }) => {
 
 // --- Standard Icons ---
 
-export const HumidityIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const HumidityIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5.69l5 4.5V18a2 2 0 01-2 2H9a2 2 0 01-2-2v-7.81l5-4.5M12 5.69L12 3m0 2.69L7 10.19V18m10-7.81L12 5.69" />
     </svg>
 );
 
-export const ComfortIcon = () => (
-     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const ComfortIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+     <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     </svg>
 );
 
 // Icons for Activity Planner
-export const OutdoorIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const OutdoorIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
 );
 
-export const LeisureIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const LeisureIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v-2a2 2 0 114 0v2" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14v-2a2 2 0 114 0v2" />
     </svg>
 );
 
-export const IndoorIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// Fix: Add className prop to allow for dynamic styling and sizing.
+export const IndoorIcon: React.FC<{ className?: string }> = ({ className = 'h-6 w-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
     </svg>
 );

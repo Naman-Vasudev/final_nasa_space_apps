@@ -37,7 +37,7 @@ const PrecipitationDetail: React.FC<PrecipitationDetailProps> = ({ data }) => {
                     <div className="flex-grow">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
-                                {/* FIX: The 'percent' prop from recharts can be undefined. Coalesce to 0 before performing arithmetic operations to prevent type errors. */}
+                                {/* Fix: The 'percent' prop from recharts can be undefined. Coalesce to 0 before performing arithmetic operations. */}
                                 <Pie data={conditionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}>
                                     {conditionData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.color} />)}
                                 </Pie>

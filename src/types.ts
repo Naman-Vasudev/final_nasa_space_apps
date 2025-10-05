@@ -208,3 +208,7 @@ export interface ActivityCategory {
 }
 
 export type ActivityPlan = ActivityCategory[];
+
+export interface HistoricalData {
+  [key: string]: number | null;
+}

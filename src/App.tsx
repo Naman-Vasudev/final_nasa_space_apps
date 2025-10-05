@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchWeatherData } from './services/nasaPowerService';
+import { fetchWeatherData, fetchSingleDayWeatherData } from './services/nasaPowerService';
 import { analyzeAll } from './services/analysisService';
-import type { AnalysisData, Location } from './types';
+import type { AnalysisData, Location, HistoricalData } from './types';
 
 import ControlPanel from './components/controls/ControlPanel';
 import MapController from './components/map/MapController';
@@ -13,6 +13,7 @@ import Chatbot from './components/chatbot/Chatbot';
 import DetailModal from './components/details/DetailModal';
 import ActivityPlanner from './components/analysis/ActivityPlanner';
 import DataExporter from './components/analysis/DataExporter';
+import HistoricalDisplay from './components/analysis/HistoricalDisplay';
 
 const logoUrl = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='logo-border-gradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' stop-color='%233B4D66'/%3e%3cstop offset='100%25' stop-color='%23111827'/%3e%3c/linearGradient%3e%3c/defs%3e%3crect x='5' y='5' width='90' height='90' rx='20' ry='20' fill='white' /%3e%3crect x='5' y='5' width='90' height='90' rx='20' ry='20' fill='transparent' stroke='url(%23logo-border-gradient)' stroke-width='8'/%3e%3cpath d='M25 68 L45 48 L60 58 L75 43' stroke='%233B4D66' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e";
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
     const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
     const [windowDays, setWindowDays] = useState<number>(15);
     const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
+    const [historicalData, setHistoricalData] = useState<HistoricalData | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [libsLoaded, setLibsLoaded] = useState(false);
@@ -57,12 +59,28 @@ const App: React.FC = () => {
         setIsLoading(true);
         setError(null);
         setAnalysis(null);
+        setHistoricalData(null);
         setIsControlsOpen(false);
 
+        // Get the selected date as a Date object at UTC midnight.
+        const selectedDate = new Date(`${date}T00:00:00Z`);
+
+        // Get today's date at UTC midnight for a clean comparison.
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
         try {
-            const weatherData = await fetchWeatherData(locToAnalyze.lat, locToAnalyze.lon);
-            const analysisResult = analyzeAll(weatherData, date, windowDays, locToAnalyze);
-            setAnalysis(analysisResult);
+            if (selectedDate < today) {
+                // It's a past date, attempt to fetch the single day's data.
+                // The service will throw an error if data is not yet available.
+                const data = await fetchSingleDayWeatherData(locToAnalyze.lat, locToAnalyze.lon, date);
+                setHistoricalData(data);
+            } else {
+                // It's today or a future date, run the climatological analysis.
+                const weatherData = await fetchWeatherData(locToAnalyze.lat, locToAnalyze.lon);
+                const analysisResult = analyzeAll(weatherData, date, windowDays, locToAnalyze);
+                setAnalysis(analysisResult);
+            }
             setTimeout(() => {
                 resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
             }, 100);
@@ -135,6 +153,12 @@ const App: React.FC = () => {
                         />
                         {/* REMOVED: apiKey prop is no longer passed. */}
                         <ActivityPlanner analysisData={analysis} />
+                    </div>
+                )}
+
+                {historicalData && !isLoading && !error && (
+                    <div ref={resultsRef}>
+                        <HistoricalDisplay historicalData={historicalData} location={location} date={date} />
                     </div>
                 )}
             </main>
